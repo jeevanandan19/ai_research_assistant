@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Research Assistant — Intelligent Paper Analysis</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+</head>
+<body class="landing-page">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top glass-nav">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/">
+        <i class="fas fa-brain me-2 text-gradient"></i>ResearchAI
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto align-items-center gap-2">
+          <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+          <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
+          <li class="nav-item"><a class="nav-link" href="#tech-stack">Tech Stack</a></li>
+          <li class="nav-item">
+            <a class="btn btn-primary btn-sm px-4" href="/upload">
+              <i class="fas fa-upload me-1"></i>Try Now
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-bg"></div>
+    <div class="container text-center hero-content">
+      <div class="badge-pill mb-3">
+        <i class="fas fa-robot me-2"></i>Powered by LangChain + RAG + FAISS
+      </div>
+      <h1 class="hero-title">
+        AI Research<br/>
+        <span class="text-gradient">Assistant Agent</span>
+      </h1>
+      <p class="hero-subtitle mx-auto">
+        Upload any research paper and instantly get structured summaries, keyword extraction,
+        insightful analysis, and intelligent Q&amp;A — all grounded in your document.
+      </p>
+      <div class="d-flex justify-content-center gap-3 mt-4">
+        <a href="/upload" class="btn btn-primary btn-lg px-5">
+          <i class="fas fa-upload me-2"></i>Upload Paper
+        </a>
+        <a href="#features" class="btn btn-outline-light btn-lg px-5">
+          Learn More <i class="fas fa-arrow-down ms-2"></i>
+        </a>
+      </div>
+      <!-- Hero Stats -->
+      <div class="hero-stats mt-5 row g-3 justify-content-center">
+        <div class="col-auto">
+          <div class="stat-card">
+            <div class="stat-number">RAG</div>
+            <div class="stat-label">Retrieval-Augmented</div>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="stat-card">
+            <div class="stat-number">FAISS</div>
+            <div class="stat-label">Vector Database</div>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="stat-card">
+            <div class="stat-number">LLM</div>
+            <div class="stat-label">AI Powered</div>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="stat-card">
+            <div class="stat-number">NLP</div>
+            <div class="stat-label">Smart Analysis</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-5 section-dark">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <h2 class="section-title">Powerful Research Features</h2>
+        <p class="text-muted">Everything you need to deeply understand research papers</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="feature-card h-100">
+            <div class="feature-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+              <i class="fas fa-file-pdf"></i>
+            </div>
+            <h5>PDF Processing</h5>
+            <p>Upload research papers up to 50 MB. Text is extracted page-by-page and split into optimal chunks for analysis.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card h-100">
+            <div class="feature-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+              <i class="fas fa-align-left"></i>
+            </div>
+            <h5>Structured Summary</h5>
+            <p>Generates Abstract Summary, Detailed Summary, Key Contributions, Limitations, and Future Work from the paper.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card h-100">
+            <div class="feature-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+              <i class="fas fa-tags"></i>
+            </div>
+            <h5>Keyword Extraction</h5>
+            <p>Extracts primary keywords, technical methods, datasets, metrics, and domain concepts in structured categories.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card h-100">
+            <div class="feature-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+              <i class="fas fa-question-circle"></i>
+            </div>
+            <h5>Intelligent Q&amp;A</h5>
+            <p>Ask any question about the paper. RAG retrieves relevant chunks and the LLM generates a grounded, accurate answer.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card h-100">
+            <div class="feature-icon" style="background: linear-gradient(135deg, #fa709a, #fee140);">
+              <i class="fas fa-lightbulb"></i>
+            </div>
+            <h5>Key Insights &amp; Novelty</h5>
+            <p>Extracts core insights, technical innovations, empirical findings, and assesses the paper's novelty score.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card h-100">
+            <div class="feature-icon" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);">
+              <i class="fas fa-database"></i>
+            </div>
+            <h5>Semantic Search (FAISS)</h5>
+            <p>All document chunks are embedded and stored in a FAISS vector database for fast, accurate semantic retrieval.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works" class="py-5">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <h2 class="section-title">How It Works</h2>
+        <p class="text-muted">A complete RAG pipeline from PDF to insights</p>
+      </div>
+      <div class="row g-0 justify-content-center">
+        <div class="col-lg-10">
+          <div class="pipeline-steps">
+            <div class="pipeline-step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h6>Upload PDF</h6>
+                <p>User uploads a research paper PDF. File is validated and stored securely.</p>
+              </div>
+            </div>
+            <div class="pipeline-arrow"><i class="fas fa-chevron-right"></i></div>
+            <div class="pipeline-step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h6>Text Extraction</h6>
+                <p>PyPDFLoader extracts text from each page. RecursiveCharacterTextSplitter chunks the content.</p>
+              </div>
+            </div>
+            <div class="pipeline-arrow"><i class="fas fa-chevron-right"></i></div>
+            <div class="pipeline-step">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h6>Embedding &amp; Indexing</h6>
+                <p>all-MiniLM-L6-v2 generates embeddings. Chunks are stored in FAISS vector DB.</p>
+              </div>
+            </div>
+            <div class="pipeline-arrow"><i class="fas fa-chevron-right"></i></div>
+            <div class="pipeline-step">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h6>RAG &amp; LLM</h6>
+                <p>Semantic search retrieves relevant chunks. LLM generates grounded, accurate responses.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack -->
+  <section id="tech-stack" class="py-5 section-dark">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <h2 class="section-title">Technology Stack</h2>
+      </div>
+      <div class="row g-3 justify-content-center">
+        {% set techs = [
+          ("Python", "fab fa-python", "#3776AB"),
+          ("Flask", "fas fa-flask", "#000000"),
+          ("LangChain", "fas fa-link", "#1C3C3C"),
+          ("FAISS", "fas fa-database", "#4285F4"),
+          ("HuggingFace", "fas fa-smile", "#FF9D00"),
+          ("OpenAI / Gemini", "fas fa-brain", "#412991"),
+          ("Bootstrap 5", "fab fa-bootstrap", "#7952B3"),
+          ("JavaScript", "fab fa-js", "#F7DF1E")
+        ] %}
+        {% for name, icon, color in techs %}
+        <div class="col-auto">
+          <div class="tech-badge">
+            <i class="{{ icon }} me-2" style="color: {{ color }};"></i>{{ name }}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-5 cta-section">
+    <div class="container text-center py-4">
+      <h2 class="section-title text-white">Ready to Analyze Your Research?</h2>
+      <p class="text-light mb-4">Upload any research paper and get AI-powered insights in seconds.</p>
+      <a href="/upload" class="btn btn-light btn-lg px-5 fw-bold">
+        <i class="fas fa-rocket me-2"></i>Get Started
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer-dark py-4">
+    <div class="container text-center">
+      <p class="mb-1 text-muted">
+        <i class="fas fa-brain me-2"></i>AI Research Assistant Agent
+      </p>
+      <p class="text-muted small">Built with LangChain · FAISS · HuggingFace · Flask</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

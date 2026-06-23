@@ -1,0 +1,58 @@
+# ── Python ────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyw
+.Python
+
+# ── Virtual environments ──────────────────────────────────────────
+env/
+venv/
+.venv/
+ENV/
+.env.bak
+
+# ── Build / packaging ─────────────────────────────────────────────
+*.egg-info/
+dist/
+build/
+*.egg
+MANIFEST
+wheels/
+
+# ── Environment & secrets ─────────────────────────────────────────
+.env
+*.env.local
+*.env.production
+
+# ── User data (uploads & FAISS indices) ──────────────────────────
+uploads/
+database/
+
+# ── HuggingFace model cache ───────────────────────────────────────
+.cache/
+models/
+
+# ── Logs ──────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── IDE ───────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS ────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# ── Testing ───────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/

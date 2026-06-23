@@ -1,0 +1,26 @@
+# ── Web Framework ─────────────────────────────────────────────────
+flask
+python-dotenv
+
+# ── LangChain ─────────────────────────────────────────────────────
+langchain
+langchain-core
+langchain-community
+langchain-text-splitters
+
+# ── LLM Providers (keep both; only the one in .env is used) ───────
+langchain-google-genai      # Gemini  → set LLM_PROVIDER=gemini
+langchain-openai            # OpenAI  → set LLM_PROVIDER=openai
+
+# ── Embeddings ────────────────────────────────────────────────────
+langchain-huggingface
+sentence-transformers
+
+# ── Vector Store ──────────────────────────────────────────────────
+faiss-cpu
+
+# ── PDF Processing ────────────────────────────────────────────────
+pypdf
+
+# ── PDF Export (summary download) ────────────────────────────────
+reportlab

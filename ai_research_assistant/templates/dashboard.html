@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — AI Research Assistant</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+</head>
+<body class="app-page">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark glass-nav">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand fw-bold" href="/">
+        <i class="fas fa-brain me-2 text-gradient"></i>ResearchAI
+      </a>
+      <!-- Document info in navbar -->
+      <div class="navbar-doc-info d-none d-md-flex align-items-center gap-2 mx-auto">
+        <i class="fas fa-file-pdf text-danger"></i>
+        <span id="navDocName" class="text-light small fw-medium text-truncate" style="max-width: 300px;"></span>
+      </div>
+      <div class="ms-auto d-flex gap-2">
+        <a href="/upload" class="btn btn-outline-light btn-sm">
+          <i class="fas fa-upload me-1"></i>New Paper
+        </a>
+        <a href="/" class="btn btn-outline-light btn-sm">
+          <i class="fas fa-home me-1"></i>Home
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hidden session id -->
+  <input type="hidden" id="sessionId" value="{{ session_id }}" />
+
+  <div class="container-fluid px-4 py-4">
+
+    <!-- Top Stats Row -->
+    <div class="row g-3 mb-4" id="statsRow">
+      <div class="col-sm-6 col-lg-3">
+        <div class="stat-widget">
+          <div class="stat-widget-icon" style="background: linear-gradient(135deg,#667eea,#764ba2)">
+            <i class="fas fa-file-alt"></i>
+          </div>
+          <div>
+            <div class="stat-widget-value" id="statPages">—</div>
+            <div class="stat-widget-label">Pages</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="stat-widget">
+          <div class="stat-widget-icon" style="background: linear-gradient(135deg,#4facfe,#00f2fe)">
+            <i class="fas fa-puzzle-piece"></i>
+          </div>
+          <div>
+            <div class="stat-widget-value" id="statChunks">—</div>
+            <div class="stat-widget-label">Chunks Indexed</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="stat-widget">
+          <div class="stat-widget-icon" style="background: linear-gradient(135deg,#43e97b,#38f9d7)">
+            <i class="fas fa-font"></i>
+          </div>
+          <div>
+            <div class="stat-widget-value" id="statWords">—</div>
+            <div class="stat-widget-label">Words</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="stat-widget">
+          <div class="stat-widget-icon" style="background: linear-gradient(135deg,#fa709a,#fee140)">
+            <i class="fas fa-comments"></i>
+          </div>
+          <div>
+            <div class="stat-widget-value" id="statQA">0</div>
+            <div class="stat-widget-label">Questions Asked</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Tabs -->
+    <ul class="nav nav-tabs dashboard-tabs mb-4" id="mainTabs">
+      <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#tab-summary">
+          <i class="fas fa-align-left me-2"></i>Summary
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#tab-keywords">
+          <i class="fas fa-tags me-2"></i>Keywords
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#tab-qa">
+          <i class="fas fa-comments me-2"></i>Q&amp;A
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#tab-insights">
+          <i class="fas fa-lightbulb me-2"></i>Insights
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#tab-info">
+          <i class="fas fa-info-circle me-2"></i>Document Info
+        </a>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+
+      <!-- ── SUMMARY TAB ─────────────────────────────────────────── -->
+      <div class="tab-pane fade show active" id="tab-summary">
+        <div class="row g-3">
+          <div class="col-lg-9">
+            <div class="card glass-card h-100">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 text-white"><i class="fas fa-align-left me-2 text-primary"></i>Research Paper Summary</h6>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-sm btn-outline-primary" id="btnGenerateSummary">
+                    <i class="fas fa-magic me-1"></i>Generate
+                  </button>
+                  <button class="btn btn-sm btn-outline-success d-none" id="btnDownloadSummary">
+                    <i class="fas fa-download me-1"></i>Download PDF
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="summaryPlaceholder" class="empty-state">
+                  <i class="fas fa-align-left empty-icon"></i>
+                  <p>Click <strong>Generate</strong> to create a structured summary of the research paper.</p>
+                </div>
+                <div id="summaryLoading" class="text-center py-5 d-none">
+                  <div class="ai-loader">
+                    <div class="ai-loader-dot"></div>
+                    <div class="ai-loader-dot"></div>
+                    <div class="ai-loader-dot"></div>
+                  </div>
+                  <p class="text-muted mt-3">Generating summary with AI...</p>
+                </div>
+                <div id="summaryContent" class="summary-content d-none"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="card glass-card">
+              <div class="card-header">
+                <h6 class="mb-0 text-white"><i class="fas fa-info-circle me-2 text-info"></i>Summary Guide</h6>
+              </div>
+              <div class="card-body">
+                <ul class="summary-guide-list">
+                  <li><i class="fas fa-chevron-right text-primary me-2"></i>Abstract Summary</li>
+                  <li><i class="fas fa-chevron-right text-primary me-2"></i>Detailed Summary</li>
+                  <li><i class="fas fa-chevron-right text-primary me-2"></i>Key Contributions</li>
+                  <li><i class="fas fa-chevron-right text-primary me-2"></i>Limitations</li>
+                  <li><i class="fas fa-chevron-right text-primary me-2"></i>Future Work</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── KEYWORDS TAB ───────────────────────────────────────── -->
+      <div class="tab-pane fade" id="tab-keywords">
+        <div class="card glass-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 text-white"><i class="fas fa-tags me-2 text-success"></i>Keywords &amp; Technical Concepts</h6>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-success" id="btnExtractKeywords">
+                <i class="fas fa-magic me-1"></i>Extract Keywords
+              </button>
+              <button class="btn btn-sm btn-outline-info d-none" id="btnExportKeywords">
+                <i class="fas fa-download me-1"></i>Export JSON
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="keywordsPlaceholder" class="empty-state">
+              <i class="fas fa-tags empty-icon"></i>
+              <p>Click <strong>Extract Keywords</strong> to identify key concepts from the paper.</p>
+            </div>
+            <div id="keywordsLoading" class="text-center py-5 d-none">
+              <div class="ai-loader">
+                <div class="ai-loader-dot"></div>
+                <div class="ai-loader-dot"></div>
+                <div class="ai-loader-dot"></div>
+              </div>
+              <p class="text-muted mt-3">Extracting keywords...</p>
+            </div>
+            <div id="keywordsContent" class="d-none">
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <h6 class="kw-category-title"><i class="fas fa-star me-2 text-warning"></i>Primary Keywords</h6>
+                  <div id="primaryKeywords" class="keyword-cloud"></div>
+                </div>
+                <div class="col-md-6">
+                  <h6 class="kw-category-title"><i class="fas fa-cogs me-2 text-info"></i>Technical Methods</h6>
+                  <div id="technicalMethods" class="keyword-cloud"></div>
+                </div>
+                <div class="col-md-6">
+                  <h6 class="kw-category-title"><i class="fas fa-chart-bar me-2 text-success"></i>Datasets &amp; Metrics</h6>
+                  <div id="datasetsMetrics" class="keyword-cloud"></div>
+                </div>
+                <div class="col-md-6">
+                  <h6 class="kw-category-title"><i class="fas fa-book me-2 text-primary"></i>Domain Concepts</h6>
+                  <div id="domainConcepts" class="keyword-cloud"></div>
+                </div>
+              </div>
+              <hr class="my-4" style="border-color:rgba(255,255,255,0.1)">
+              <h6 class="kw-category-title mb-3"><i class="fas fa-list me-2 text-light"></i>All Keywords</h6>
+              <div id="allKeywords" class="keyword-cloud"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Q&A TAB ─────────────────────────────────────────────── -->
+      <div class="tab-pane fade" id="tab-qa">
+        <div class="row g-3">
+          <div class="col-lg-7">
+            <div class="card glass-card h-100 d-flex flex-column">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 text-white"><i class="fas fa-comments me-2 text-warning"></i>Intelligent Q&amp;A (RAG)</h6>
+                <button class="btn btn-sm btn-outline-danger" id="btnClearChat">
+                  <i class="fas fa-trash me-1"></i>Clear
+                </button>
+              </div>
+              <div class="card-body d-flex flex-column p-0">
+                <div id="chatMessages" class="chat-messages flex-grow-1 p-3">
+                  <div class="chat-welcome">
+                    <i class="fas fa-robot chat-welcome-icon"></i>
+                    <p>Ask me anything about the research paper. I'll search the document and give you a grounded answer.</p>
+                    <div class="suggested-questions mt-3">
+                      <p class="small text-muted mb-2">Suggested questions:</p>
+                      <button class="btn btn-sm btn-outline-secondary mb-1 suggested-q">What is the main contribution of this paper?</button>
+                      <button class="btn btn-sm btn-outline-secondary mb-1 suggested-q">What methodology was used?</button>
+                      <button class="btn btn-sm btn-outline-secondary mb-1 suggested-q">What are the key results and findings?</button>
+                      <button class="btn btn-sm btn-outline-secondary mb-1 suggested-q">What datasets were used for evaluation?</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="chat-input-wrapper p-3">
+                  <div class="input-group">
+                    <input type="text" id="questionInput" class="form-control chat-input"
+                           placeholder="Ask a question about the paper..." />
+                    <button class="btn btn-primary" id="btnAsk">
+                      <i class="fas fa-paper-plane"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="card glass-card h-100">
+              <div class="card-header">
+                <h6 class="mb-0 text-white"><i class="fas fa-search me-2 text-info"></i>Retrieved Context</h6>
+              </div>
+              <div class="card-body">
+                <div id="contextPlaceholder" class="empty-state small">
+                  <i class="fas fa-search empty-icon" style="font-size:2rem"></i>
+                  <p class="small">Retrieved document chunks will appear here after you ask a question.</p>
+                </div>
+                <div id="contextContent" class="d-none"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── INSIGHTS TAB ───────────────────────────────────────── -->
+      <div class="tab-pane fade" id="tab-insights">
+        <div class="row g-3">
+          <div class="col-lg-6">
+            <div class="card glass-card h-100">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 text-white"><i class="fas fa-lightbulb me-2 text-warning"></i>Key Insights</h6>
+                <button class="btn btn-sm btn-outline-warning" id="btnExtractInsights">
+                  <i class="fas fa-magic me-1"></i>Extract
+                </button>
+              </div>
+              <div class="card-body">
+                <div id="insightsPlaceholder" class="empty-state">
+                  <i class="fas fa-lightbulb empty-icon"></i>
+                  <p>Click <strong>Extract</strong> to generate insights.</p>
+                </div>
+                <div id="insightsLoading" class="text-center py-5 d-none">
+                  <div class="ai-loader">
+                    <div class="ai-loader-dot"></div>
+                    <div class="ai-loader-dot"></div>
+                    <div class="ai-loader-dot"></div>
+                  </div>
+                  <p class="text-muted mt-3">Extracting insights...</p>
+                </div>
+                <div id="insightsContent" class="summary-content d-none"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card glass-card h-100">
+              <div class="card-header">
+                <h6 class="mb-0 text-white"><i class="fas fa-star me-2 text-info"></i>Novelty Assessment</h6>
+              </div>
+              <div class="card-body">
+                <div id="noveltyPlaceholder" class="empty-state">
+                  <i class="fas fa-star empty-icon"></i>
+                  <p>Novelty assessment will appear here after insights are extracted.</p>
+                </div>
+                <div id="noveltyContent" class="summary-content d-none"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── DOCUMENT INFO TAB ─────────────────────────────────── -->
+      <div class="tab-pane fade" id="tab-info">
+        <div class="card glass-card">
+          <div class="card-header">
+            <h6 class="mb-0 text-white"><i class="fas fa-file-alt me-2 text-secondary"></i>Document Information</h6>
+          </div>
+          <div class="card-body">
+            <div class="row g-4">
+              <div class="col-md-6">
+                <h6 class="text-muted small text-uppercase mb-3">File Details</h6>
+                <table class="table table-borderless info-table">
+                  <tbody id="fileInfoTable"></tbody>
+                </table>
+              </div>
+              <div class="col-md-6">
+                <h6 class="text-muted small text-uppercase mb-3">Processing Stats</h6>
+                <table class="table table-borderless info-table">
+                  <tbody id="processingInfoTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-content -->
+  </div><!-- /container -->
+
+  <!-- Global Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay d-none">
+    <div class="loading-box">
+      <div class="ai-loader large">
+        <div class="ai-loader-dot"></div>
+        <div class="ai-loader-dot"></div>
+        <div class="ai-loader-dot"></div>
+      </div>
+      <p id="loadingMsg" class="text-white mt-3">Processing...</p>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastMsg" class="toast align-items-center border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="toastBody">Message</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
